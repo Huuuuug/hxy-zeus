@@ -1,0 +1,43 @@
+/* 引用 */
+.zeus-preview blockquote {
+  padding: 20px 10px;
+  margin: 10px 0;
+  color: var(--zeus-preview-blockquote-color);
+  border-left: 5px solid var(--zeus-preview-blockquote-border-color);
+  border-radius: var(--zeus-preview-border-radius);
+  background-color: var(--zeus-preview-blockquote-bg-color);
+}
+
+.zeus-preview blockquote blockquote {
+  border: 1px solid var(--zeus-preview-blockquote-border-color);
+}
+
+.zeus-preview .zeus-blockquote-green {
+  background-color: var(--zeus-preview-blockquote-bg-green);
+  border-left: 3px solid var(--zeus-preview-blockquote-border-green);
+}
+
+.zeus-preview .zeus-blockquote-yellow {
+  background-color: var(--zeus-preview-blockquote-bg-yellow);
+  border-left: 3px solid var(--zeus-preview-blockquote-border-yellow);
+}
+
+.zeus-preview .zeus-blockquote-red {
+  background-color: var(--zeus-preview-blockquote-bg-red);
+  border-left: 3px solid var(--zeus-preview-blockquote-border-red);
+}
+
+.zeus-preview .zeus-blockquote-blue {
+  background-color: var(--zeus-preview-blockquote-bg-blue);
+  border-left: 3px solid var(--zeus-preview-blockquote-border-blue);
+}
+
+.zeus-preview .zeus-blockquote-purple {
+  background-color: var(--zeus-preview-blockquote-bg-purple);
+  border-left: 3px solid var(--zeus-preview-blockquote-border-purple);
+}
+
+.zeus-preview .zeus-blockquote-black {
+  background-color: var(--zeus-preview-blockquote-bg-black);
+  border-left: 3px solid var(--zeus-preview-blockquote-border-black);
+}

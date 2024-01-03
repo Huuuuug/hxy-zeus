@@ -1,0 +1,27 @@
+/* ================================= 编辑器与预览样式 ================================== */
+:root {
+  /* ================================= 边框颜色 =================================*/
+  --zeus-border-color: #424342;
+  /* 引用 */
+  --zeus-preview-blockquote-color: #7d7d7d;
+  --zeus-preview-blockquote-bg-color: #f0f0f0;
+  --zeus-preview-blockquote-border-color: #bebebe;
+  --zeus-preview-blockquote-bg-green: #edf8db;
+  --zeus-preview-blockquote-border-green: #bed609;
+  --zeus-preview-blockquote-bg-yellow: #faf0d5;
+  --zeus-preview-blockquote-border-yellow: #efc75e;
+  --zeus-preview-blockquote-bg-red: #fbe6e9;
+  --zeus-preview-blockquote-border-red: #ff9090;
+  --zeus-preview-blockquote-bg-blue: #dfeefd;
+  --zeus-preview-blockquote-border-blue: #81bbf8;
+  --zeus-preview-blockquote-bg-purple: #ece4fb;
+  --zeus-preview-blockquote-border-purple: #ba9bf2;
+  --zeus-preview-blockquote-bg-black: rgba(0, 0, 0, 0.7);
+  --zeus-preview-blockquote-border-black: #000000;
+  /* zeus单行代码块 */
+  --zeus-preview-code-bg-color: #eaeaea;
+  /* zeus多行代码块 */
+  --zeus-preview-pre-text-color: #a9b7c6;
+  --zeus-preview-pre-bg-color: #2b2b2b;
+  --zeus-preview-pre-box-shadow: 2px 2px 8px #000;
+}

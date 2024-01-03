@@ -1,0 +1,9 @@
+{
+  "name": "@gnade/components",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {},
+  "keywords": [],
+  "license": "MIT"
+}
