@@ -1,6 +1,8 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 
+import { changeTheme } from '@/utils'
+
 interface ThemeState {
   isDarkMode: boolean
 }
@@ -16,6 +18,7 @@ export const useThemeState = create<ThemeState & ThemeAction>()(
 
       setTheme: (isDark: boolean) => {
         set({ isDarkMode: isDark })
+        changeTheme(isDark)
       },
     }),
     {

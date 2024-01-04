@@ -28,6 +28,128 @@ const zhCNPhrases = {
   regexp: '使用正则表达式',
 }
 
+/**
+ * codemirror 样式配置
+ * https://codemirror.net/examples/styling/#themes
+ */
+export const cmTheme: any = {
+  '&': {
+    color: 'var(--zeus-editor-color)',
+    backgroundColor: 'var(--zeus-editor-bg-color)',
+  },
+  '&.cm-focused .cm-cursor': {
+    borderLeftColor: 'var(--zeus-editor-caret-color)',
+  },
+  '.cm-content': {
+    whiteSpace: 'break-spaces',
+    wordWrap: 'break-word',
+    width: 'calc(100% - 55px)',
+    caretColor: '#528bff',
+  },
+  '.cm-cursor, .cm-dropCursor': { borderLeftColor: 'var(--zeus-editor-caret-color)' },
+  '&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection':
+    { backgroundColor: 'var(--zeus-editor-selection-bg-color)' },
+  '.cm-panels': {
+    backgroundColor: 'var(--zeus-editor-gutters-bg-color)',
+    color: 'var(--zeus-editor-color)',
+  },
+  '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
+  '.cm-panels.cm-panels-bottom': {
+    borderTop: '2px solid black',
+  },
+  '.cm-textfield': {
+    backgroundColor: 'var(--zeus-editor-bg-color)',
+    border: '1px solid var(--zeus-border-color)',
+    outline: 'none',
+  },
+  '.cm-button': {
+    backgroundImage: 'none',
+    backgroundColor: 'var(--zeus-editor-bg-color)',
+    border: '1px solid var(--zeus-border-color)',
+  },
+  '.cm-button::active': {
+    backgroundColor: 'var(--zeus-text-bg-color)',
+  },
+  '.cm-gutters': {
+    backgroundColor: 'var(--zeus-editor-gutters-bg-color)',
+    borderColor: 'var(--zeus-editor-gutters-border-color)',
+    color: 'var(--zeus-editor-gutters-color)',
+    fontSize: '14px',
+    fontWeight: '700',
+  },
+  '.cm-activeLineGutter': {
+    backgroundColor: 'var(--zeus-editor-gutters-bg-color)',
+    color: 'var(--zeus-color-primary)',
+  },
+  '.cm-lineNumbers': {
+    width: '40px',
+  },
+  '.cm-scroller': {
+    overflow: 'overlay',
+    outline: 'none',
+  },
+
+  '.cm-line': {
+    wordWrap: 'break-word',
+    wordBreak: 'break-all',
+    padding: '0',
+  },
+  '.cm-activeLine': {
+    backgroundColor: 'var(--zeus-editor-active-line-gutter-bg-color)',
+  },
+  '.cm-selectionMatch': {
+    backgroundColor: 'var(--zeus-editor-selection-match-bg-color)',
+  },
+  '.ͼ1.cm-focused': {
+    outline: 'none',
+  },
+  '.ͼ2 .cm-activeLine': {
+    backgroundColor: 'var(--zeus-editor-active-line-gutter-bg-color)',
+  },
+  '.ͼ5': {
+    color: 'var(--zeus-editor-c5-color)',
+    fontWeight: '700',
+  },
+  '.ͼ6': {
+    color: '#707070',
+    fontWeight: '500',
+  },
+  '.ͼ7': {
+    backgroundColor: 'var(--zeus-editor-c7-bg-color)',
+    color: 'var(--zeus-color-primary)',
+  },
+  '&.ͼo': {
+    height: '100%',
+  },
+  '.ͼc': {
+    color: 'var(--zeus-editor-cc-color)',
+  },
+  // ͼm: 注释   #940
+  '.ͼm': {
+    color: 'var(--zeus-editor-cm-color)',
+  },
+  // ͼb: 关键字 #708
+  '.ͼb': {
+    color: 'var(--zeus-editor-cb-color)',
+  },
+  // ͼd: 数字 #708
+  '.ͼd': {
+    color: 'var(--zeus-editor-cd-color)',
+  },
+  // ͼe: 字符串 #a11
+  '.ͼe': {
+    color: 'var(--zeus-editor-ce-color)',
+  },
+  //ͼi: 类名:
+  '.ͼi': {
+    color: 'var(--zeus-editor-ci-color)',
+  },
+  //ͼg: 方法名和参数
+  '.ͼg': {
+    color: 'var(--zeus-editor-cg-color)',
+  },
+}
+
 export class CodeMirror {
   /**
    * editor
@@ -61,7 +183,7 @@ export class CodeMirror {
         basicSetup,
         search({ top: true }),
         markdown({ codeLanguages: languages }),
-        // EditorView.theme(cwTheme),
+        EditorView.theme(cmTheme),
         keymap.of([
           { key: 'Tab', run: insertTab },
           { key: 'Shift-Tab', run: indentLess },

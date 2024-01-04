@@ -10,6 +10,7 @@ import { useThemeState } from '@/store'
 
 const App: React.FC = () => {
   const { isDarkMode } = useThemeState()
+
   return (
     <ConfigProvider
       theme={{

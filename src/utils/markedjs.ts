@@ -77,7 +77,7 @@ export const renderTable = (header: string, body: string) => {
 export const renderCode = (code: string, language: string | undefined): string => {
   const id = 'pre-' + Date.now() + '-' + randomInt(1, 1000000)
 
-  return `<pre><code id="${id}" class="hljs language-${language}">${code}</code><span class="pre-copy" onclick="onHtmlEventDispatch(this,'click',event,'copyPreCode','${id}')">${language}</span></pre>`
+  return `<pre><div class="code-toolbar"><span>${language}</span><span class="pre-copy" onclick="onHtmlEventDispatch(this,'click',event,'copyPreCode','${id}')">复制代码</span></div><code id="${id}" class="hljs language-${language}">${code}</code></pre>`
 }
 
 /**

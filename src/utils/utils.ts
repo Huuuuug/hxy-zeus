@@ -58,3 +58,21 @@ export const writeText = (text: string): void => {
     })
   }
 }
+
+let debounceTimeout: NodeJS.Timeout | undefined
+/**
+ * 防抖
+ * @param fn 待执行函数
+ * @param immediateParse 是否立即执行
+ * @param time 延迟执行时间
+ */
+export const debounce = (fn: () => void, immediateParse: boolean, time = 500) => {
+  if (debounceTimeout != undefined) {
+    clearTimeout(debounceTimeout)
+  }
+  if (immediateParse) {
+    fn()
+  } else {
+    debounceTimeout = setTimeout(fn, time)
+  }
+}

@@ -3,7 +3,7 @@ import { createStyles } from 'antd-style'
 export const useHomeStyles = createStyles(({ css, token }) => ({
   homeWrapper: css`
     min-height: 100vh;
-    background-color: ${token.colorBgBase};
+    /* background-color: ${token.colorBgBase}; */
     padding-bottom: 10px;
   `,
 

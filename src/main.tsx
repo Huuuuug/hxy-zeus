@@ -12,5 +12,6 @@ import App from '@/app'
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
 root.render(<App />)
+
 // 挂载全局事件
 window.onHtmlEventDispatch = onHtmlEventDispatch

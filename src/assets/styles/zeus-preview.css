@@ -41,3 +41,10 @@
   background-color: var(--zeus-preview-blockquote-bg-black);
   border-left: 3px solid var(--zeus-preview-blockquote-border-black);
 }
+
+.zeus-preview .code-toolbar {
+  height: 30px;
+  background-color: red;
+  display: flex;
+  justify-content: space-between;
+}
