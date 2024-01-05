@@ -7,6 +7,7 @@ import marked from '@/utils/markedjs'
 
 import ArticleEditorToolbar from './ArticleEditorToolbar'
 
+import { useEditorResize } from '@/hooks/useEditorResize'
 import { debounce } from '@/utils'
 
 let cm: CodeMirror
@@ -17,8 +18,12 @@ const ArticleEditor: React.FC = () => {
   const editorRef = useRef<HTMLDivElement>(null)
   // 编辑框和预览框之间的间隔线实例
   const dividerRef = useRef<HTMLDivElement>(null)
+  // 预览框dom实例
+  const previewRef = useRef<HTMLDivElement>(null)
   // 预览框HTML内容
   const [articleHtml, setArticleHtml] = useState<string>('')
+
+  useEditorResize(editorRef, previewRef, dividerRef)
 
   /**
    * 解析markdown
@@ -29,7 +34,9 @@ const ArticleEditor: React.FC = () => {
       setArticleHtml(content)
     })
   }
-
+  /**
+   * 初始化编辑器
+   */
   const initEditor = () => {
     cm = new CodeMirror(
       CodeMirror.newEditor(
@@ -76,6 +83,7 @@ const ArticleEditor: React.FC = () => {
             <div ref={editorRef} className={`${styles.editorContainer}-edit`} />
             <div ref={dividerRef} className={`${styles.editorContainer}-divider`} />
             <div
+              ref={previewRef}
               className={`${styles.editorContainer}-preview`}
               dangerouslySetInnerHTML={{ __html: articleHtml }}
             ></div>
@@ -116,34 +124,32 @@ const useArticleEditorStyles = createStyles(({ css, token }) => ({
     &-edit {
       width: 50%;
       background-color: ${token.colorBgContainer};
-      border: 1px solid var(--zeus-border-color);
       border-right: 0;
       overflow: hidden;
       overflow-y: scroll;
+      overflow-x: hidden;
       box-sizing: border-box;
     }
     &-divider {
       height: 100%;
       border-left: 2px solid var(--zeus-border-color);
-      /* margin-left: 1px; */
+      border-right: 2px solid var(--zeus-border-color);
       cursor: ew-resize;
       &:hover {
-        border-left: 2px dashed var(--zeus-border-color);
+        border-color: var(--zeus-border-color-light);
       }
     }
     &-preview {
       width: 50%;
       background-color: var(--zeus-preview-bg-color);
       color: var(--zeus-preview-color);
-      border: 1px solid var(--zeus-border-color);
       border-left: 0;
-      overflow: hidden;
       overflow-y: scroll;
       padding: 0 20px 20px 20px;
       box-sizing: border-box;
       .code-toolbar {
         height: 25px;
-        background-color: #8a7f7f;
+        background-color: #5f5757;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -152,7 +158,11 @@ const useArticleEditorStyles = createStyles(({ css, token }) => ({
         box-sizing: border-box;
 
         .pre-copy {
-          color: #3c7c3c;
+          color: var(--zeus-text-color-secondary);
+          cursor: pointer;
+          &:hover {
+            color: var(--zeus-text-color-first);
+          }
         }
       }
 
@@ -201,19 +211,6 @@ const useArticleEditorStyles = createStyles(({ css, token }) => ({
         background-color: var(--zeus-preview-blockquote-bg-black);
         border-left: 3px solid var(--zeus-preview-blockquote-border-black);
       }
-
-      /* 复制按钮 */
-      /* .pre-copy {
-        position: absolute;
-        color: #eee;
-        font-size: 14px;
-        top: 5px;
-        right: 5px;
-        cursor: pointer;
-        &:hover {
-          color: red;
-        }
-      } */
     }
   `,
 }))

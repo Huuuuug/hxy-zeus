@@ -1,6 +1,9 @@
 :root {
   /* ================================= 边框颜色 =================================*/
   --zeus-border-color: #424342;
+  --zeus-border-color-light: #7e6c6cb9;
+  --zeus-text-color-first: #ffffff;
+  --zeus-text-color-secondary: #414144;
   --zeus-color-primary: #722ed1;
 }
 

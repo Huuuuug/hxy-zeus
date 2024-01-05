@@ -68,6 +68,8 @@ export const renderTable = (header: string, body: string) => {
   }
   return `<table><thead>${header}</thead><tbody>${body}</tbody></table>`
 }
+
+const ICON_SVG = `<svg preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" width="1.2em" height="1.2em" data-v-5d9e4641=""><path fill="currentColor" d="M7 6V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1.001 1.001 0 0 1 3 21l.003-14c0-.552.45-1 1.007-1H7zM5.003 8L5 20h10V8H5.003zM9 6h8v10h2V4H9v2z"></path></svg>`
 /**
  * 自定义代码块内容解析
  * @param code 解析后的HTML代码
@@ -77,7 +79,7 @@ export const renderTable = (header: string, body: string) => {
 export const renderCode = (code: string, language: string | undefined): string => {
   const id = 'pre-' + Date.now() + '-' + randomInt(1, 1000000)
 
-  return `<pre><div class="code-toolbar"><span>${language}</span><span class="pre-copy" onclick="onHtmlEventDispatch(this,'click',event,'copyPreCode','${id}')">复制代码</span></div><code id="${id}" class="hljs language-${language}">${code}</code></pre>`
+  return `<pre><div class="code-toolbar"><span>${language}</span><i class="pre-copy" onclick="onHtmlEventDispatch(this,'click',event,'copyPreCode','${id}')">${ICON_SVG}</i></div><code id="${id}" class="hljs language-${language}">${code}</code></pre>`
 }
 
 /**

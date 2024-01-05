@@ -25,6 +25,5 @@ a {
 
 /* 滚动条上的滚动滑块 */
 ::-webkit-scrollbar-thumb {
-  background-color: #722ed1;
-  border-radius: 9999px;
+  background-color: rgba($color: #ffffff, $alpha: 0.3);
 }
