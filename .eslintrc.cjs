@@ -71,5 +71,6 @@ module.exports = {
     'no-debugger': 'warn', //提交时不允许有debugger
     'react-hooks/rules-of-hooks': 'off',
     'react-hooks/exhaustive-deps': 'off',
+    'react/prop-types': 'off',
   },
 }

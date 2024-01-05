@@ -6,6 +6,8 @@ import { CodeMirror } from '@/utils/codemirror'
 import marked from '@/utils/markedjs'
 
 import ArticleEditorToolbar from './ArticleEditorToolbar'
+import EditorTool from './EditorTool'
+import Toc from './Toc'
 
 import { useEditorResize } from '@/hooks/useEditorResize'
 import { debounce } from '@/utils'
@@ -18,8 +20,14 @@ const ArticleEditor: React.FC = () => {
   const editorRef = useRef<HTMLDivElement>(null)
   // 编辑框和预览框之间的间隔线实例
   const dividerRef = useRef<HTMLDivElement>(null)
-  // 预览框dom实例
+  // toc框dom实例
   const previewRef = useRef<HTMLDivElement>(null)
+  // 预览框dom实例
+  const tocRef = useRef<HTMLDivElement>(null)
+  // 编辑与预览框整体dom实例
+  const codeAreaRef = useRef<HTMLDivElement>(null)
+  // toc框与编辑框之间的分割线dom实例
+  const tocDividerRef = useRef<HTMLDivElement>(null)
   // 预览框HTML内容
   const [articleHtml, setArticleHtml] = useState<string>('')
 
@@ -67,19 +75,27 @@ const ArticleEditor: React.FC = () => {
   useEffect(() => {
     initEditor()
   }, [])
+
   return (
     <div className={cx('article-editor', styles.editorWrapper)}>
       {/* toolbar */}
       <ArticleEditorToolbar />
       <div className={`${styles.editorWrapper}-container`}>
-        <div className={`${styles.editorWrapper}-container-toc`}>toc</div>
+        <div ref={tocRef} className={`${styles.editorWrapper}-container-toc`}>
+          <Toc />
+        </div>
+        <div ref={tocDividerRef} className={`${styles.editorWrapper}-container-divider`} />
         <div className={`${styles.editorWrapper}-container-main`}>
           {/* 快捷工具 */}
           <div className={styles.editorTool} onClick={parseMarkdown}>
-            tool
+            <EditorTool
+              bold={() => cm.commandBold()}
+              italic={() => cm.commandItalic()}
+              blockquote={() => cm.commandQuote()}
+            />
           </div>
           {/* 编辑区和预览区域 */}
-          <div className={cx('editor-container', styles.editorContainer)}>
+          <div ref={codeAreaRef} className={cx('editor-container', styles.editorContainer)}>
             <div ref={editorRef} className={`${styles.editorContainer}-edit`} />
             <div ref={dividerRef} className={`${styles.editorContainer}-divider`} />
             <div
@@ -99,13 +115,23 @@ export default ArticleEditor
 const useArticleEditorStyles = createStyles(({ css, token }) => ({
   editorWrapper: css`
     min-height: 100vh;
-    /* background-color: ${token.colorBgBase}; */
     padding-top: 30px;
     box-sizing: border-box;
     &-container {
       display: flex;
+
       &-toc {
         min-width: 300px;
+        max-width: 600px;
+      }
+      &-divider {
+        height: calc(100vh - 30px);
+        border-left: 1px solid var(--zeus-border-color);
+        border-right: 1px solid var(--zeus-border-color);
+        cursor: ew-resize;
+        &:hover {
+          border-color: var(--zeus-border-color-light);
+        }
       }
       &-main {
         flex: 1;
@@ -114,11 +140,11 @@ const useArticleEditorStyles = createStyles(({ css, token }) => ({
   `,
 
   editorTool: css`
-    background-color: #3d3d3d;
-    height: 35px;
+    height: 40px;
+    background-color: ${token.colorBgContainer};
   `,
   editorContainer: css`
-    height: calc(100vh - 65px);
+    height: calc(100vh - 70px);
     display: flex;
 
     &-edit {

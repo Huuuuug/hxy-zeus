@@ -1,4 +1,4 @@
-export const ICONFONT_URL = '//at.alicdn.com/t/c/font_4387724_yli2rb6i82q.js'
+export const ICONFONT_URL = '//at.alicdn.com/t/c/font_4387724_5j0t6vktj23.js'
 import { createFromIconfontCN } from '@ant-design/icons'
 export interface AccountPopoverList {
   key: string

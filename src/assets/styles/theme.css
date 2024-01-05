@@ -10,6 +10,7 @@
 .light {
   /* 基础文字颜色 */
   --zeus-base-text: #000;
+  --zeus-bg-lighter: #ffffff;
 
   --zeus-editor-color: #707070;
   --zeus-editor-bg-color: #ffffff;
@@ -80,6 +81,7 @@
 .dark {
   /* 基础文字颜色 */
   --zeus-base-text: #fff;
+  --zeus-bg-lighter: #383636;
 
   --zeus-editor-color: #abb2bf;
   --zeus-editor-bg-color: #282c34;
