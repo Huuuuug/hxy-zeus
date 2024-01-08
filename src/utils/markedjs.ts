@@ -6,7 +6,6 @@ import 'katex/dist/katex.min.css'
 
 import { randomInt } from './utils'
 
-import type { RendererObject } from 'marked'
 import type { SynchronousOptions } from 'marked-highlight'
 
 //#region ----------------------------------------< markedjs 配置 >--------------------------------------
@@ -64,12 +63,15 @@ export const renderTable = (header: string, body: string) => {
   const arr = header.match(doubleWell)
   const isContainer: boolean = arr != null && arr[0] === 'container'
   if (isContainer) {
-    return `<table class="bl-table-container"><thead>${header}</thead><tbody>${body}</tbody></table>`
+    return `<table class="zeus-table-container"><thead>${header}</thead><tbody>${body}</tbody></table>`
   }
   return `<table><thead>${header}</thead><tbody>${body}</tbody></table>`
 }
-
+/**
+ * 保存按钮
+ */
 const ICON_SVG = `<svg preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" width="1.2em" height="1.2em" data-v-5d9e4641=""><path fill="currentColor" d="M7 6V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1.001 1.001 0 0 1 3 21l.003-14c0-.552.45-1 1.007-1H7zM5.003 8L5 20h10V8H5.003zM9 6h8v10h2V4H9v2z"></path></svg>`
+
 /**
  * 自定义代码块内容解析
  * @param code 解析后的HTML代码
@@ -98,12 +100,12 @@ export const renderCodespan = (src: string) => {
       })
     } catch (error) {
       console.error(error)
-      return `<div class='bl-preview-analysis-fail-inline'>
+      return `<div class='zeus-preview-analysis-fail-inline'>
           Katex 语法解析失败! 你可以尝试前往<a href='https://katex.org/#demo' target='_blank'> Katex 官网</a> 来校验你的公式。
           </div>`
     }
   }
-  return `<code>${src}</code>`
+  return `<code class="zeus-preview-single-code">${src}</code>`
 }
 
 /**
@@ -149,19 +151,6 @@ export const renderBlockquote = (quote: string) => {
   return `<blockquote class="${clazz}">${finalQuote}</blockquote>`
 }
 
-/**
- * 自定义渲染
- */
-const renderer: RendererObject = {
-  code(code: string, infostring: string | undefined): string {
-    return renderCode(code, infostring)
-  },
-  blockquote(quote: string): string {
-    return renderBlockquote(quote)
-  },
-}
-
-marked.use({ renderer })
 //#endregion
 
 export default marked

@@ -10,6 +10,16 @@ import * as prettier from 'prettier/standalone'
 
 import { isBlank } from './obj'
 
+export type TitleType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+enum TitleMapSymbol {
+  'h1' = '#',
+  'h2' = '##',
+  'h3' = '###',
+  'h4' = '####',
+  'h5' = '#####',
+  'h6' = '######',
+}
+
 const zhCNPhrases = {
   'Fold line': '折叠',
   'Unfold line': '展开',
@@ -88,7 +98,6 @@ export const cmTheme: any = {
     overflow: 'overlay',
     outline: 'none',
   },
-
   '.cm-line': {
     wordWrap: 'break-word',
     wordBreak: 'break-all',
@@ -268,14 +277,14 @@ export class CodeMirror {
               return true
             },
           },
-          // {
-          //   key: 'Ctrl-Alt-e',
-          //   mac: 'Ctrl-Cmd-e',
-          //   run(view: EditorView) {
-          //     CodeMirror.commandPre(view)
-          //     return true
-          //   },
-          // },
+          {
+            key: 'Ctrl-Alt-e',
+            mac: 'Ctrl-Cmd-e',
+            run(view: EditorView) {
+              CodeMirror.commandPre(view)
+              return true
+            },
+          },
           {
             key: 'Ctrl-Alt-s',
             mac: 'Ctrl-Cmd-s',
@@ -466,25 +475,41 @@ export class CodeMirror {
     const suffixFrom: number = range.to
     const suffixTo: number = range.to + len
     const suffix = this.sliceDoc(editor, suffixFrom, suffixTo)
-    // 判断是取消还是添加, 如果被选中的文本前后已经是 target 字符, 则删除前后字符
-    if (prefix == target && suffix == target) {
-      return {
-        changes: [
-          { from: prefixFrom, to: prefixTo, insert: '' },
-          { from: suffixFrom, to: suffixTo, insert: '' },
-        ],
-        range: EditorSelection.range(prefixFrom, suffixFrom - len),
+    if (target.startsWith('#')) {
+      // 判断是取消还是添加, 如果被选中的文本前后已经是 target 字符, 则删除前后字符
+      if (prefix == target && suffix == target) {
+        return {
+          changes: [{ from: prefixFrom, to: prefixTo, insert: '' }],
+          range: EditorSelection.range(prefixFrom, suffixFrom - len),
+        }
+      } else {
+        return {
+          changes: [{ from: range.from, insert: `${target} ` }],
+          range: EditorSelection.range(range.from + len, range.to + len),
+        }
       }
     } else {
-      return {
-        changes: [
-          { from: range.from, insert: target },
-          { from: range.to, insert: target },
-        ],
-        range: EditorSelection.range(range.from + len, range.to + len),
+      // 判断是取消还是添加, 如果被选中的文本前后已经是 target 字符, 则删除前后字符
+      if (prefix == target && suffix == target) {
+        return {
+          changes: [
+            { from: prefixFrom, to: prefixTo, insert: '' },
+            { from: suffixFrom, to: suffixTo, insert: '' },
+          ],
+          range: EditorSelection.range(prefixFrom, suffixFrom - len),
+        }
+      } else {
+        return {
+          changes: [
+            { from: range.from, insert: target },
+            { from: range.to, insert: target },
+          ],
+          range: EditorSelection.range(range.from + len, range.to + len),
+        }
       }
     }
   }
+
   /**
    * 行内格式的替换命令, 用于前后缀不同的格式, 如 `<sup></sup>`等
    *
@@ -542,6 +567,13 @@ export class CodeMirror {
     editor.dispatch(
       editor.state.changeByRange((range: SelectionRange) => this.replaceInlineCommand(editor, range, '**')),
     )
+  /** 选中内容设置为标题 */
+  private static commandTitle = (editor: EditorView, type: TitleType) =>
+    editor.dispatch(
+      editor.state.changeByRange((range: SelectionRange) =>
+        this.replaceInlineCommand(editor, range, TitleMapSymbol[type]),
+      ),
+    )
   /** 选中内容斜体 */
   private static commandItalic = (editor: EditorView) =>
     editor.dispatch(
@@ -574,8 +606,7 @@ export class CodeMirror {
   /** 在当前位置增加表格 */
   private static commandTable = (editor: EditorView) => this.insertBlockCommand(editor, `\n|||\n|---|---|\n|||\n`)
   /** 在当前位置增加多行代码块 */
-  // private static commandPre = (editor: EditorView) =>
-  //   this.insertBlockCommand(editor, `\n\`\`\`${editorStyle.defaultPreLanguage}\n\n\`\`\`\n`)
+  private static commandPre = (editor: EditorView) => this.insertBlockCommand(editor, `\n\`\`\`text\n\n\`\`\`\n`)
   /** 在当前位置增加单选框 */
   private static commandCheckBox = (editor: EditorView) => this.insertBlockCommand(editor, `\n- [ ] \n`)
   /** 在当前位置增加分割线 */
@@ -639,13 +670,14 @@ export class CodeMirror {
   // 实例调用
   insertBlockCommand = (content: string) => CodeMirror.insertBlockCommand(this._editor, content)
   commandBold = () => CodeMirror.commandBold(this._editor)
+  commandTitle = (type: TitleType) => CodeMirror.commandTitle(this._editor, type)
   commandItalic = () => CodeMirror.commandItalic(this._editor)
   commandStrike = () => CodeMirror.commandStrike(this._editor)
   commandCode = () => CodeMirror.commandCode(this._editor)
   commandSup = () => CodeMirror.commandSup(this._editor)
   commandSub = () => CodeMirror.commandSub(this._editor)
   commandTable = () => CodeMirror.commandTable(this._editor)
-  // commandPre = () => CodeMirror.commandPre(this._editor)
+  commandPre = () => CodeMirror.commandPre(this._editor)
   commandCheckBox = () => CodeMirror.commandCheckBox(this._editor)
   commandSeparator = () => CodeMirror.commandSeparator(this._editor)
   commandQuote = () => CodeMirror.commandQuote(this._editor)

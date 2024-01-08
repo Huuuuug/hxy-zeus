@@ -1,3 +1,27 @@
+/* 单行代码 */
+.zeus-preview-single-code {
+  background-color: rgb(99, 97, 100);
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+/* 代码块 */
+.zeus-preview pre {
+  position: relative;
+  overflow: hidden;
+  font-size: 16px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.zeus-preview pre .pre-copy {
+  color: var(--zeus-text-color-secondary);
+  cursor: pointer;
+  &:hover {
+    color: var(--zeus-text-color-first);
+  }
+}
+
 /* 引用 */
 .zeus-preview blockquote {
   padding: 20px 10px;

@@ -3,16 +3,23 @@ import { useEffect, useRef, useState } from 'react'
 import { createStyles } from 'antd-style'
 
 import { CodeMirror } from '@/utils/codemirror'
+import type { TitleType } from '@/utils/codemirror'
 import marked from '@/utils/markedjs'
+import { renderBlockquote, renderCode, renderCodespan, renderHeading } from '@/utils/markedjs'
 
 import ArticleEditorToolbar from './ArticleEditorToolbar'
 import EditorTool from './EditorTool'
 import Toc from './Toc'
 
-import { useEditorResize } from '@/hooks/useEditorResize'
+import type { ArticleToc } from './type'
+import type { RendererObject } from 'marked'
+
+import { useResize } from '@/hooks/useResize'
 import { debounce } from '@/utils'
 
 let cm: CodeMirror
+let previewFullScreen = false // 是否全屏展开预览
+let editorFullScreen = false // 是否全屏展开编辑
 
 const ArticleEditor: React.FC = () => {
   const { cx, styles } = useArticleEditorStyles()
@@ -28,23 +35,71 @@ const ArticleEditor: React.FC = () => {
   const codeAreaRef = useRef<HTMLDivElement>(null)
   // toc框与编辑框之间的分割线dom实例
   const tocDividerRef = useRef<HTMLDivElement>(null)
+
   // 预览框HTML内容
   const [articleHtml, setArticleHtml] = useState<string>('')
 
-  useEditorResize(editorRef, previewRef, dividerRef)
+  useResize(editorRef, previewRef, dividerRef)
+  useResize(tocRef, codeAreaRef, tocDividerRef)
 
   /**
    * 解析markdown
    */
   const parseMarkdown = () => {
     const mdContent = cm.getDocString()
+    clearToc()
     marked.parse(mdContent, { async: true }).then((content: string) => {
       setArticleHtml(content)
     })
   }
+  // 全屏预览
+  const alt_3 = (): void => {
+    previewFullScreen = !previewFullScreen
+    if (previewFullScreen) editorFullScreen = false
+    changeEditorPreviewStyle()
+  }
+  // 全屏编辑
+  const alt_4 = (): void => {
+    editorFullScreen = !editorFullScreen
+    if (editorFullScreen) previewFullScreen = false
+    changeEditorPreviewStyle()
+  }
+
+  /**
+   * 编辑器和预览的展开收起
+   */
+  const changeEditorPreviewStyle = () => {
+    if (previewFullScreen) {
+      editorRef.current!.style.width = `0px`
+      previewRef.current!.style.width = `100%`
+      previewRef.current!.style.padding = '10px 20px 0 20px'
+      return
+    }
+    if (editorFullScreen) {
+      editorRef.current!.style.width = `100%`
+      previewRef.current!.style.width = `0`
+      previewRef.current!.style.padding = '0'
+      return
+    }
+
+    editorRef.current!.style.width = `50%`
+    previewRef.current!.style.width = `50%`
+    previewRef.current!.style.padding = '10px 20px 0 20px'
+  }
+
+  //#region ----------------------------------------< toc >-------------------------------
+
+  const [articleToc, setArticleToc] = useState<ArticleToc[]>([])
+  /** 清除Toc目录 */
+  const clearToc = () => {
+    setArticleToc([])
+  }
+
+  //#endregion
   /**
    * 初始化编辑器
    */
+
   const initEditor = () => {
     cm = new CodeMirror(
       CodeMirror.newEditor(
@@ -72,9 +127,34 @@ const ArticleEditor: React.FC = () => {
     editorRef.current!.appendChild(editorHeightHolder)
   }
 
+  //#region ----------------------------------------< marked/preview >-------------------------------
+  /**
+   * 自定义渲染
+   */
+  const renderer: RendererObject = {
+    code(code: string, infostring: string | undefined): string {
+      return renderCode(code, infostring)
+    },
+    blockquote(quote: string): string {
+      return renderBlockquote(quote)
+    },
+    codespan(code: string): string {
+      return renderCodespan(code)
+    },
+    heading(text: any, level: number): string {
+      setArticleToc((pre) => {
+        return [...pre, { level, clazz: `toc-${level}`, index: pre.length, content: text }]
+      })
+      return renderHeading(text, level)
+    },
+  }
+
+  marked.use({ renderer })
+  //#endregion
+
   useEffect(() => {
     initEditor()
-  }, [])
+  }, [editorRef])
 
   return (
     <div className={cx('article-editor', styles.editorWrapper)}>
@@ -82,25 +162,37 @@ const ArticleEditor: React.FC = () => {
       <ArticleEditorToolbar />
       <div className={`${styles.editorWrapper}-container`}>
         <div ref={tocRef} className={`${styles.editorWrapper}-container-toc`}>
-          <Toc />
+          <Toc tocList={articleToc} />
         </div>
         <div ref={tocDividerRef} className={`${styles.editorWrapper}-container-divider`} />
-        <div className={`${styles.editorWrapper}-container-main`}>
+        <div ref={codeAreaRef} className={`${styles.editorWrapper}-container-main`}>
           {/* 快捷工具 */}
-          <div className={styles.editorTool} onClick={parseMarkdown}>
+          <div className={styles.editorTool}>
             <EditorTool
               bold={() => cm.commandBold()}
               italic={() => cm.commandItalic()}
+              code={() => cm.commandCode()}
+              preCode={() => cm.commandPre()}
+              title={(type: TitleType) => cm.commandTitle(type)}
               blockquote={() => cm.commandQuote()}
+              blockquoteBlack={() => cm.commandQuoteBlack()}
+              blockquoteBlue={() => cm.commandQuoteBlue()}
+              blockquoteGreen={() => cm.commandQuoteBlue()}
+              blockquotePurple={() => cm.commandQuotePurple()}
+              blockquoteYellow={() => cm.commandQuoteYellow()}
+              blockquoteRed={() => cm.commandQuoteRed}
+              link={() => cm.commandLink()}
+              editorFullScreen={() => alt_3()}
+              previewFullScreen={() => alt_4()}
             />
           </div>
           {/* 编辑区和预览区域 */}
-          <div ref={codeAreaRef} className={cx('editor-container', styles.editorContainer)}>
+          <div className={cx('editor-container', styles.editorContainer)}>
             <div ref={editorRef} className={`${styles.editorContainer}-edit`} />
             <div ref={dividerRef} className={`${styles.editorContainer}-divider`} />
             <div
               ref={previewRef}
-              className={`${styles.editorContainer}-preview`}
+              className={cx('zeus-preview', `${styles.editorContainer}-preview`)}
               dangerouslySetInnerHTML={{ __html: articleHtml }}
             ></div>
           </div>
@@ -121,13 +213,13 @@ const useArticleEditorStyles = createStyles(({ css, token }) => ({
       display: flex;
 
       &-toc {
-        min-width: 300px;
+        min-width: 200px;
         max-width: 600px;
       }
       &-divider {
         height: calc(100vh - 30px);
-        border-left: 1px solid var(--zeus-border-color);
-        border-right: 1px solid var(--zeus-border-color);
+        border-left: 2px solid var(--zeus-border-color);
+        border-right: 2px solid var(--zeus-border-color);
         cursor: ew-resize;
         &:hover {
           border-color: var(--zeus-border-color-light);
@@ -158,8 +250,8 @@ const useArticleEditorStyles = createStyles(({ css, token }) => ({
     }
     &-divider {
       height: 100%;
-      border-left: 2px solid var(--zeus-border-color);
-      border-right: 2px solid var(--zeus-border-color);
+      border-left: 1px solid var(--zeus-border-color);
+      border-right: 1px solid var(--zeus-border-color);
       cursor: ew-resize;
       &:hover {
         border-color: var(--zeus-border-color-light);
@@ -171,7 +263,8 @@ const useArticleEditorStyles = createStyles(({ css, token }) => ({
       color: var(--zeus-preview-color);
       border-left: 0;
       overflow-y: scroll;
-      padding: 0 20px 20px 20px;
+      overflow-x: hidden;
+      padding: 10px 20px 0px 20px;
       box-sizing: border-box;
       .code-toolbar {
         height: 25px;
@@ -182,60 +275,6 @@ const useArticleEditorStyles = createStyles(({ css, token }) => ({
         font-size: 14px;
         padding: 0 15px;
         box-sizing: border-box;
-
-        .pre-copy {
-          color: var(--zeus-text-color-secondary);
-          cursor: pointer;
-          &:hover {
-            color: var(--zeus-text-color-first);
-          }
-        }
-      }
-
-      pre {
-        position: relative;
-        overflow: hidden;
-        font-size: 16px;
-        border-radius: 4px;
-        margin-top: 10px;
-      }
-      blockquote {
-        padding: 15px 10px;
-        margin: 10px 0;
-        color: var(--zeus-preview-blockquote-color);
-        border-left: 3px solid var(--zeus-preview-blockquote-border-color);
-        border-radius: var(--zeus-preview-border-radius);
-        background-color: var(--zeus-preview-blockquote-bg-color);
-      }
-      blockquote blockquote {
-        border: 1px solid var(--zeus-preview-blockquote-border-color);
-      }
-      .zeus-blockquote-green {
-        background-color: var(--zeus-preview-blockquote-bg-green);
-        border-left: 3px solid var(--zeus-preview-blockquote-border-green);
-      }
-      .zeus-blockquote-yellow {
-        background-color: var(--zeus-preview-blockquote-bg-yellow);
-        border-left: 3px solid var(--zeus-preview-blockquote-border-yellow);
-      }
-
-      .zeus-blockquote-red {
-        background-color: var(--zeus-preview-blockquote-bg-red);
-        border-left: 3px solid var(--zeus-preview-blockquote-border-red);
-      }
-
-      .zeus-blockquote-blue {
-        background-color: var(--zeus-preview-blockquote-bg-blue);
-        border-left: 3px solid var(--zeus-preview-blockquote-border-blue);
-      }
-      .zeus-blockquote-purple {
-        background-color: var(--zeus-preview-blockquote-bg-purple);
-        border-left: 3px solid var(--zeus-preview-blockquote-border-purple);
-      }
-
-      .zeus-blockquote-black {
-        background-color: var(--zeus-preview-blockquote-bg-black);
-        border-left: 3px solid var(--zeus-preview-blockquote-border-black);
       }
     }
   `,

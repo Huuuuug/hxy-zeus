@@ -18,6 +18,11 @@ a {
   cursor: pointer;
 }
 
+* {
+  font-family: 'Jetbrains Mono', sans-serif;
+  box-sizing: border-box;
+}
+
 /* 整个滚动条 */
 ::-webkit-scrollbar {
   width: 2px;
