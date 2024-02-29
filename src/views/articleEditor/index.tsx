@@ -218,7 +218,7 @@ const useArticleEditorStyles = createStyles(({ css, token }) => ({
       }
       &-divider {
         height: calc(100vh - 30px);
-        border-left: 2px solid var(--zeus-border-color);
+        border-left: 1px solid var(--zeus-border-color);
         border-right: 2px solid var(--zeus-border-color);
         cursor: ew-resize;
         &:hover {

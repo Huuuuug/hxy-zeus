@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import dayjs from 'dayjs'
-
+import ArticleCard from '@/components/articleCard'
 import Toolbar from '@/components/toolbar'
 
 import { api } from '@/apis'
@@ -50,14 +49,9 @@ const Index: React.FC = () => {
       <div className={styles.homeContainer}>
         {articles.length > 0 ? (
           <ul>
-            {articles.map(({ id, title, content, img: imgSrc, create_time }) => (
+            {articles.map(({ id, title, content }) => (
               <li key={id} onClick={() => handleArticleItemClick(id)}>
-                <div>
-                  <p>{title}</p>
-                  <p>{content}</p>
-                  <span>{dayjs(create_time).format('YYYY-MM-DD')}</span>
-                </div>
-                {imgSrc ? <img src={imgSrc} /> : null}
+                <ArticleCard title={title} desc={content} />
               </li>
             ))}
           </ul>

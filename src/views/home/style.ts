@@ -18,12 +18,8 @@ export const useHomeStyles = createStyles(({ css, token }) => ({
         display: flex;
         justify-content: space-between;
         box-sizing: border-box;
-        padding: 20px;
         margin-bottom: 10px;
-        background-color: ${token.colorBgContainer};
         cursor: pointer;
-
-        color: ${token.colorText};
         &-text {
           width: 100%;
           overflow: hidden;

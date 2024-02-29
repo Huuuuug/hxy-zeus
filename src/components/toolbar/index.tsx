@@ -43,7 +43,7 @@ const Toolbar: React.FC = () => {
       >
         Huuuuug
       </div>
-      <div className={styles.toolbarMiddle}>toolbar Search</div>
+      {/* <div className={styles.toolbarMiddle}>toolbar Search</div> */}
       <div className={styles.toolbarRight}>
         {/*account avatar*/}
         <AccountPopover list={ACCOUNT_POPOVER_LIST} />
